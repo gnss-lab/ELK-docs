@@ -52,74 +52,74 @@ logger_configuration()
 5. Добавляет следущее
 
    ```yaml
-   input {
-   	tcp {
-   		port => 50000
-   		tags => {название сервиса}
-   	}
-   }
+    input {
+        tcp {
+            port => 50000
+            tags => {название сервиса}
+        }
+    }
    
    filter {
-   	if {название сервиса} in [tags] {
-   		json{
-   			source => "message"
-   			target => "jsonMsg"
-   			remove_field => "message"
-   		}
+        if {название сервиса} in [tags] {
+            json {
+                source => "message"
+                target => "jsonMsg"
+                remove_field => "message"
+            }
    
-   		json {
-   			source => "[jsonMsg][message]"
-   			remove_field => "[jsonMsg][message]"
-   		}
+            json {
+                source => "[jsonMsg][message]"
+                remove_field => "[jsonMsg][message]"
+            }
    
-   		mutate {
-   			remove_field => [
-   				"[jsonMsg][@timestamp]", 
-   				"[jsonMsg][@version]",
-   				"[record][level][icon]",
-   				"[record][level][name]",
-   				"[record][time][repr]",
-   				"[record][time][timestamp]",
-   				"[record][name]",
-   				"[record][level][no]",
-   				"[jsonMsg][logger_name]",
-   				"[jsonMsg][type]",
-   				"text"
-   			]
+            mutate {
+                remove_field => [
+                    "[jsonMsg][@timestamp]", 
+                    "[jsonMsg][@version]",
+                    "[record][level][icon]",
+                    "[record][level][name]",
+                    "[record][time][repr]",
+                    "[record][time][timestamp]",
+                    "[record][name]",
+                    "[record][level][no]",
+                    "[jsonMsg][logger_name]",
+                    "[jsonMsg][type]",
+                    "text"
+                ]
    
-   			rename => {
-   				"[record][module]" => "[jsonMsg][module]"
-   				"[record][thread][id]" => "[jsonMsg][thread][id]"
-   				"[record][thread][name]" => "[jsonMsg][thread][name]"
-   				"[record][message]" => "[jsonMsg][message]"
-   				"[record][file][name]" => "[jsonMsg][file][name]"
-   				"[record][file][path]" => "[jsonMsg][file][path]"
-   				"[record][line]" => "[jsonMsg][line]"
-   				"[record][function]" => "[jsonMsg][function]"
-   				"[record][process][id]" => "[jsonMsg][process][id]"
-   				"[record][process][name]" => "[jsonMsg][process][name]"
-   				"[record][elapsed][repr]" => "[jsonMsg][elapsed][repr]"
-   				"[record][elapsed][seconds]" => "[jsonMsg][elapsed][seconds]"
-   			}
-   		}
+                rename => {
+                    "[record][module]" => "[jsonMsg][module]"
+                    "[record][thread][id]" => "[jsonMsg][thread][id]"
+                    "[record][thread][name]" => "[jsonMsg][thread][name]"
+                    "[record][message]" => "[jsonMsg][message]"
+                    "[record][file][name]" => "[jsonMsg][file][name]"
+                    "[record][file][path]" => "[jsonMsg][file][path]"
+                    "[record][line]" => "[jsonMsg][line]"
+                    "[record][function]" => "[jsonMsg][function]"
+                    "[record][process][id]" => "[jsonMsg][process][id]"
+                    "[record][process][name]" => "[jsonMsg][process][name]"
+                    "[record][elapsed][repr]" => "[jsonMsg][elapsed][repr]"
+                    "[record][elapsed][seconds]" => "[jsonMsg][elapsed][seconds]"
+                }
+            }
    
-   		mutate {
-   			remove_field => ["record"]
-   		}
-   	}
-   }
+            mutate {
+                remove_field => ["record"]
+            }
+        }
+    }
    
    
-   output {
-   	if {название сервиса} in [tags] {
-   		elasticsearch {
-   			hosts => "elasticsearch:9200"
-   			user => "logstash_internal"
-   			password => "${LOGSTASH_INTERNAL_PASSWORD}"
-   			index => "logstash-{название сервиса}"
-   		}
-   	}
-   }
+    output {
+        if {название сервиса} in [tags] {
+            elasticsearch {
+                hosts => "elasticsearch:9200"
+                user => "logstash_internal"
+                password => "${LOGSTASH_INTERNAL_PASSWORD}"
+                index => "logstash-{название сервиса}"
+            }
+        }
+    }
    ```
 
 ### 2.2. Настройка
